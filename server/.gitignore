@@ -1,0 +1,4 @@
+/node_modules
+.env
+supabase.session.sql
+package-lock.json

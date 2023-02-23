@@ -1,0 +1,9 @@
+DROP TABLE users;
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    is_admin BOOLEAN DEFAULT false NOT NULL,
+    phone VARCHAR(12) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password TEXT NOT NULL
+);

@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "db.dprvmukpiqquwtaofpwg.supabase.co",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "supabase",
+            "database": "postgres",
+            "username": "postgres",
+            "password": "hgq4JCoL7BwMBD6R"
+        }
+    ]
+}
