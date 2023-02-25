@@ -1,8 +1,9 @@
 const prisma = require("../../DB/prisma");
 
-const getAllUsers = (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
-    res.send("getAllUsers");
+    const allUsers = await prisma.users.findMany();
+    res.status(200).json(allUsers);
   } catch (error) {
     console.log(error);
     res.status(400).json(error.message);
