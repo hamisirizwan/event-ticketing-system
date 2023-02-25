@@ -1,8 +1,26 @@
 const prisma = require("../../DB/prisma");
 
-const deleteUser = (req, res) => {
+const deleteUser = async (req, res) => {
+  const user_id = parseInt(req.params.id);
   try {
-    res.send("deleteUser");
+    const user = await prisma.users.findUnique({
+      where: {
+        id: user_id,
+      },
+    });
+
+    if (!user) {
+      res.status(400).json("user not found");
+    }
+
+    //delete the user
+    await prisma.users.delete({
+      where: {
+        id: user_id,
+      },
+    });
+
+    res.status(200).json("user deleted successfully");
   } catch (error) {
     console.log(error);
     res.status(400).json(error.message);

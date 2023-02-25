@@ -31,7 +31,6 @@ const changePassword = async (req, res) => {
         password: newhashedPass,
       },
     });
-
     res.status(200).json("user added successfully");
   } catch (error) {
     console.log(error);
