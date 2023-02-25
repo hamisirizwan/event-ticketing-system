@@ -3,10 +3,10 @@ const bcrypt = require("bcryptjs");
 
 const changePassword = async (req, res) => {
   const { oldpass, newpass } = req.body;
-  const user_id = 1; //will later be dynamic after jwt
+  const user_id = 2; //will later be dynamic after jwt
   try {
     if (!oldpass || !newpass) {
-      res.status(400).json("missing required parameters");
+      return res.status(400).json("missing required parameters");
     }
     const user = await prisma.users.findUnique({
       where: {
@@ -14,10 +14,14 @@ const changePassword = async (req, res) => {
       },
     });
 
+    if (!user) {
+      return res.status(400).json("user not found or deleted");
+    }
+
     //validate old pass
     const validPassword = await bcrypt.compare(oldpass, user.password);
     if (!validPassword) {
-      res.status(400).json("old password invalid");
+      return res.status(400).json("old password invalid");
     }
 
     //hash new pass
@@ -31,7 +35,7 @@ const changePassword = async (req, res) => {
         password: newhashedPass,
       },
     });
-    res.status(200).json("user added successfully");
+    res.status(200).json("password changed successfully");
   } catch (error) {
     console.log(error);
     res.status(400).json(error.message);

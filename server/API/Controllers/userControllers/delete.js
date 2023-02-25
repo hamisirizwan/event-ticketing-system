@@ -10,7 +10,7 @@ const deleteUser = async (req, res) => {
     });
 
     if (!user) {
-      res.status(400).json("user not found");
+      return res.status(400).json("user not found");
     }
 
     //delete the user

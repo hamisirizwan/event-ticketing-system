@@ -27,6 +27,7 @@ const AddUser = async (req, res) => {
     }
 
     const password = generator.password();
+    console.log(password);
     const hashedPass = await bcrypt.hash(password, 10);
     const addedUser = await prisma.users.create({
       data: {

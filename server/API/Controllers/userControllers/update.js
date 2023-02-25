@@ -8,23 +8,20 @@ const UpdateUser = async (req, res) => {
   try {
     //check for no data
     if (Object.keys(data).length === 0) {
-      throw {
-        custom: true,
-        message: "no data to update",
-      };
+      return res.status(400).json("no data to update");
     }
 
     //if email provided
     if (data.email) {
       if (!validator.email(data.email)) {
-        res.status(200).json("invalid email");
+        return res.status(200).json("invalid email");
       }
     }
 
     //if phone provided
     if (data.phone) {
       if (!validator.phone(data.phone)) {
-        res.status(200).json("invalid phone number");
+        return res.status(200).json("invalid phone number");
       }
     }
 
@@ -35,7 +32,7 @@ const UpdateUser = async (req, res) => {
       },
     });
     if (!existingUser) {
-      res.status(400).json("user not found");
+      return res.status(400).json("user not found");
     }
 
     const updatedUser = await prisma.users.update({
@@ -48,6 +45,8 @@ const UpdateUser = async (req, res) => {
         phone: data.phone || existingUser.phone,
       },
     });
+
+    updatedUser.password = "############";
     res.status(200).json({
       message: "Details updated successfully.",
       data: updatedUser,
