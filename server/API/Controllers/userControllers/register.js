@@ -3,7 +3,7 @@ const generator = require("../../Utilities/generators");
 const validator = require("../../Utilities/validator");
 const bcrypt = require("bcryptjs");
 
-const Register = async (req, res) => {
+const AddUser = async (req, res) => {
   const { email, name, is_admin, phone } = req.body;
   try {
     if (!email || !name || !phone) {
@@ -47,4 +47,4 @@ const Register = async (req, res) => {
   }
 };
 
-module.exports = Register;
+module.exports = AddUser;

@@ -1,13 +1,15 @@
+const changePassword = require("./changePassword");
 const deleteUser = require("./delete");
 const getAllUsers = require("./getAllUsers");
 const Login = require("./login");
-const Register = require("./register");
+const addUser = require("./register");
 const UpdateUser = require("./update");
 
 module.exports = {
-  Register,
+  addUser,
   Login,
   getAllUsers,
   UpdateUser,
   deleteUser,
+  changePassword,
 };
