@@ -30,22 +30,20 @@ function SignIn() {
       return toast.error("invalid email");
     }
 
-    await axios
-      .post("/user/login", inputData)
-      .then((res) => {
-        console.log(res);
-        toast.success();
-        //handle user auth redux
-        navigate("/dashboard");
-      })
-      .catch((err) => {
-        if (err.response.data) {
-          toast.error(err.response.data);
-        } else {
-          toast.error("something wrong happened");
-        }
-        console.log(err);
-      });
+    try {
+      const resp = await axios.post("/user/login", inputData);
+      console.log(res);
+      toast.success();
+      //handle user auth redux
+      navigate("/dashboard");
+    } catch (error) {
+      if (!error.response.data) {
+        console.log(error);
+        return toast.error("something wrong happened");
+      }
+      console.log(error);
+      return toast.error(err.response.data);
+    }
   };
   return (
     <section className="grid md:grid-cols-2  h-screen">
