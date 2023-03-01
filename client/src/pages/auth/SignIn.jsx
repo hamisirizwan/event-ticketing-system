@@ -5,8 +5,11 @@ import emailValidator from "email-validator";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import Input from "../../components/layouts/reusables/Input";
 
 function SignIn() {
+  const navigate = useNavigate();
   const [inputData, setInputData] = useState({
     email: "",
     password: "",
@@ -33,10 +36,15 @@ function SignIn() {
         console.log(res);
         toast.success();
         //handle user auth redux
+        navigate("/dashboard");
       })
       .catch((err) => {
-        toast.error(err.response.data);
-        console.log(err.response.data);
+        if (err.response.data) {
+          toast.error(err.response.data);
+        } else {
+          toast.error("something wrong happened");
+        }
+        console.log(err);
       });
   };
   return (
@@ -44,37 +52,36 @@ function SignIn() {
       <div className="flex items-center justify-center">
         <img src={ticketImage} alt="" />
       </div>
-      <div className="flex items-center justify-center md:justify-start ">
-        <div>
+      <div className="flex items-center justify-center ">
+        <div className="">
           <h1 className="text-2xl font-medium text-center mt-4">Log In</h1>
           <form className="my-4 mx-3" onSubmit={handleSubmit}>
             <div className="py-4">
               {!inputData.email && (
                 <h1 className="text-xs text-red-500">required</h1>
               )}
-              <input
+              <Input
+                label="Email Adress"
                 type="email"
                 name="email"
-                placeholder="enter email"
-                className=" block w-full border-b-2 focus:border-primary focus:outline-none "
+                placeholder="xyz@gmail.com"
                 value={inputData.email}
-                // required
-                onChange={handleChange}
+                handleChange={handleChange}
               />
             </div>
+
             <div className="py-4">
               {!inputData.password && (
                 <h1 className="text-xs text-red-500">required</h1>
               )}
 
-              <input
+              <Input
+                label="Password"
                 type="password"
                 name="password"
                 placeholder="enter password"
-                className="block w-full border-b-2 focus:border-primary focus:outline-none"
                 value={inputData.password}
-                // required
-                onChange={handleChange}
+                handleChange={handleChange}
               />
             </div>
             <button

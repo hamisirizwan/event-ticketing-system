@@ -1,9 +1,14 @@
 import React from "react";
+import AvailableTickets from "../components/sections/AvailableTickets";
+import HeroSection from "../components/sections/Hero";
+import TopNav from "../components/sections/TopNav";
 
 function LandingPage() {
   return (
     <div>
-      <h1 className="text-3xl text-green-400">hello landing</h1>
+      <TopNav />
+      <HeroSection />
+      <AvailableTickets />
     </div>
   );
 }
