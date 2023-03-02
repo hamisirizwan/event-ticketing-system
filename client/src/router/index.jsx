@@ -5,6 +5,7 @@ import Protected from "../pages/auth/Protected";
 import SignIn from "../pages/auth/SignIn";
 import Error404 from "../pages/Error404";
 import LandingPage from "../pages/LandingPage";
+import BookEvent from "../pages/main/BookEvent";
 import Dashboard from "../pages/main/Dashboard";
 import Events from "../pages/main/Events";
 import Tickets from "../pages/main/Tickets";
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/sign-in",
     element: <SignIn />,
+  },
+  {
+    path: "/book",
+    element: <BookEvent />,
   },
   {
     element: <Protected />,
