@@ -25,8 +25,8 @@ function BookEvent() {
   return (
     <section className="text-gray-600 body-font">
       <ToastContainer />
-      <div className="container px-5 py-10 md:py-24 mx-auto flex flex-wrap items-center">
-        <div className="sm:w-1/2  md:mb-10 px-4">
+      <div className="container py-10 md:py-24 mx-auto flex flex-wrap items-center">
+        <div className="sm:w-1/2  px-3 md:mb-10">
           <div className="rounded-lg h-64 overflow-hidden">
             <img
               alt="content"
