@@ -15,3 +15,13 @@ model users {
   email    String  @unique @db.VarChar(255)
   password String
 }
+
+model events {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  description String
+  image_url   String
+  price       Int
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  event_date  DateTime  @db.Timestamp(6)
+}

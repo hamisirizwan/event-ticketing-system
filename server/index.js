@@ -4,6 +4,7 @@ require("dotenv").config();
 const cors = require("cors");
 const port = process.env.PORT;
 const USER = require("./API/Routes/user");
+const EVENT = require("./API/Routes/event");
 
 //required middlewares
 app.use(express.json());
@@ -15,6 +16,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", USER);
+app.use("/api/event", EVENT);
+
 app.listen(port, () => {
   console.log(`server is up and running at port: ${port}`);
 });
