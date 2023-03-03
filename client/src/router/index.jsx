@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     element: <SignIn />,
   },
   {
-    path: "/book",
+    path: "/book/:id",
     element: <BookEvent />,
   },
   {
