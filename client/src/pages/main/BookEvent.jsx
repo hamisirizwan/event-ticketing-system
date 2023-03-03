@@ -12,6 +12,9 @@ function BookEvent() {
   const [event, setEvent] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [ticketBooked, setTicketBooked] = useState(true);
+  const [booking, setBooking] = useState(false);
+  const [ticket, setTicket] = useState({});
   const [inputData, setInputData] = useState({
     name: "",
     phone: "",
@@ -24,7 +27,7 @@ function BookEvent() {
     await axios
       .get(`/event/single/${params.id}`)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setEvent(res.data);
         setLoading(false);
       })
@@ -64,6 +67,22 @@ function BookEvent() {
       phone: inputData.phone,
       event_id: event.id,
     });
+    try {
+      setBooking(true);
+      const resp = await axios.post("/ticket/book", {
+        name: inputData.name,
+        phone: inputData.phone,
+        event_id: event.id,
+      });
+      setTicket(resp.data);
+      setBooking(false);
+      setTicketBooked(true);
+    } catch (error) {
+      console.log(error.message);
+      setBooking(false);
+      setTicketBooked(false);
+      toast.error("something wrong happened. Please try again");
+    }
   };
 
   return (
@@ -111,37 +130,50 @@ function BookEvent() {
             <h2 className="text-gray-900 text-lg font-medium title-font mb-5">
               Book Now
             </h2>
-            <form onSubmit={handleSubmit}>
-              <div>
-                {!inputData.name && (
-                  <h1 className="text-xs text-red-500">required</h1>
-                )}
-                <Input
-                  label="Full Name"
-                  type="text"
-                  name="name"
-                  placeholder="your name"
-                  value={inputData.name}
-                  handleChange={handleChange}
-                />
+            {booking ? (
+              <Spinner />
+            ) : ticketBooked ? (
+              <div className="flex flex-col items-center gap-2">
+                <h1>Ticket Details</h1>
+                <h1>Ticket No : {ticket.ticket_no}</h1>
+                {/* <h1>Event: {ticket.events.title}</h1> */}
+                <button className="text-white bg-indigo-500 border-0 my-10 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg w-full">
+                  PAY NOW
+                </button>
               </div>
-              <div>
-                {!inputData.phone && (
-                  <h1 className="text-xs text-red-500">required</h1>
-                )}
-                <Input
-                  label="Phone Number"
-                  type="tel"
-                  name="phone"
-                  placeholder="07... or 01..."
-                  value={inputData.phone}
-                  handleChange={handleChange}
-                />
-              </div>
-              <button className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg w-full">
-                Pay Now
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div>
+                  {!inputData.name && (
+                    <h1 className="text-xs text-red-500">required</h1>
+                  )}
+                  <Input
+                    label="Full Name"
+                    type="text"
+                    name="name"
+                    placeholder="your name"
+                    value={inputData.name}
+                    handleChange={handleChange}
+                  />
+                </div>
+                <div>
+                  {!inputData.phone && (
+                    <h1 className="text-xs text-red-500">required</h1>
+                  )}
+                  <Input
+                    label="Phone Number"
+                    type="tel"
+                    name="phone"
+                    placeholder="07... or 01..."
+                    value={inputData.phone}
+                    handleChange={handleChange}
+                  />
+                </div>
+                <button className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg w-full">
+                  {booking ? "Booking... Please wait" : "Book Now"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}
