@@ -31,6 +31,9 @@ const bookTicket = async (req, res) => {
         phone: phone,
         paid_by: name,
       },
+      include: {
+        events: true,
+      },
     });
     res.status(200).json(newTicket);
   } catch (error) {

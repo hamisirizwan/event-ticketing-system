@@ -6,14 +6,18 @@ import "react-toastify/dist/ReactToastify.css";
 import Input from "../../components/layouts/reusables/Input";
 import axios from "axios";
 import Spinner from "../../components/layouts/reusables/Spinner";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import StkSpinner from "../../components/layouts/reusables/StkSpinner";
+import Swal from "sweetalert2";
 
 function BookEvent() {
+  const navigate = useNavigate();
   const [event, setEvent] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [ticketBooked, setTicketBooked] = useState(true);
+  const [ticketBooked, setTicketBooked] = useState(false);
   const [booking, setBooking] = useState(false);
+  const [stkSent, setStkSent] = useState(false);
   const [ticket, setTicket] = useState({});
   const [inputData, setInputData] = useState({
     name: "",
@@ -62,11 +66,11 @@ function BookEvent() {
     }
 
     //send request
-    console.log({
-      name: inputData.name,
-      phone: inputData.phone,
-      event_id: event.id,
-    });
+    // console.log({
+    //   name: inputData.name,
+    //   phone: inputData.phone,
+    //   event_id: event.id,
+    // });
     try {
       setBooking(true);
       const resp = await axios.post("/ticket/book", {
@@ -74,9 +78,75 @@ function BookEvent() {
         phone: inputData.phone,
         event_id: event.id,
       });
+      console.log(resp);
       setTicket(resp.data);
       setBooking(false);
       setTicketBooked(true);
+    } catch (error) {
+      console.log(error.message);
+      setBooking(false);
+      setTicketBooked(false);
+      toast.error("something wrong happened. Please try again");
+    }
+  };
+
+  var reqcount = 0;
+  const stkPushQuery = (CheckoutRequestID) => {
+    const timer = setInterval(() => {
+      reqcount += 1;
+
+      if (reqcount === 15) {
+        clearInterval(timer);
+        setBooking(false);
+        setTicketBooked(false);
+        setStkSent(false);
+        toast.warning("You took too long to pay");
+      }
+      axios
+        .post("/ticket/query", {
+          CheckoutRequestID,
+        })
+        .then((response) => {
+          if (response.data.ResultCode === "0") {
+            clearInterval(timer);
+            Swal.fire(
+              "SUCCESS!",
+              "Event booked sucessfully, See you at the event",
+              "success"
+            );
+            setBooking(false);
+            sendPayRequest(false);
+            setStkSent(false);
+            setInputData({
+              name: "",
+              phone: "",
+            });
+            navigate("/");
+          } else if (response.errorCode === "500.001.1001") {
+            console.log(response.errorMessage);
+          } else {
+            clearInterval(timer);
+            toast.warning(response.data.ResultDesc);
+            setBooking(false);
+            setTicketBooked(false);
+            setStkSent(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }, 2000);
+  };
+  const sendPayRequest = async (e) => {
+    e.preventDefault();
+    setBooking(true);
+    try {
+      const resp = await axios.post(`/ticket/pay/${ticket.ticket_no}`);
+      const CheckoutRequestID = resp.data.CheckoutRequestID;
+      setBooking(false);
+      setTicketBooked(false);
+      setStkSent(true);
+      stkPushQuery(CheckoutRequestID);
     } catch (error) {
       console.log(error.message);
       setBooking(false);
@@ -133,13 +203,38 @@ function BookEvent() {
             {booking ? (
               <Spinner />
             ) : ticketBooked ? (
-              <div className="flex flex-col items-center gap-2">
-                <h1>Ticket Details</h1>
-                <h1>Ticket No : {ticket.ticket_no}</h1>
-                {/* <h1>Event: {ticket.events.title}</h1> */}
+              <form
+                className="flex flex-col items-center gap-2"
+                onSubmit={sendPayRequest}
+              >
+                <h1 className="font-bold text-xl">Ticket Details</h1>
+                <h1>
+                  Ticket No :{" "}
+                  <span className="text-secondary font-bold">
+                    {ticket.ticket_no}
+                  </span>
+                </h1>
+                <h1>
+                  Event:{" "}
+                  <span className="text-secondary font-bold">
+                    {ticket.events.title}
+                  </span>
+                </h1>
                 <button className="text-white bg-indigo-500 border-0 my-10 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg w-full">
                   PAY NOW
                 </button>
+              </form>
+            ) : stkSent ? (
+              <div className="flex flex-col items-center gap-5">
+                <h1>
+                  HELLO <span className="font-bold">{ticket.paid_by}</span>
+                </h1>
+                <h1>
+                  STK PUSH SENT TO{" "}
+                  <span className="font-bold">{ticket.phone}</span>
+                </h1>
+                <StkSpinner />
+                <h1>Please confirm to complete booking</h1>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
