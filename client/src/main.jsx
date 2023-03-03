@@ -5,7 +5,8 @@ import router from "./router";
 import "./index.css";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:1234/api/";
+// axios.defaults.baseURL = "http://localhost:1234/api/";
+axios.defaults.baseURL = "https://tiketi.devriz.xyz/api/";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
