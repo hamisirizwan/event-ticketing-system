@@ -3,7 +3,7 @@ const bucket = require("../../DB/bucket");
 const fs = require("fs");
 
 const addEvent = async (req, res) => {
-  const {} = req.body;
+  const { title, description, price, event_date } = req.body;
   const image = req.file;
   try {
     if (!image) {
@@ -22,10 +22,7 @@ const addEvent = async (req, res) => {
 
     if (!uploaded.data) {
       fs.unlinkSync(req.file.path);
-      throw {
-        custom: true,
-        message: uploaded.error.message,
-      };
+      return res.status(400).json(uploaded.error.message);
     }
 
     //remove file from filesystem
@@ -34,7 +31,28 @@ const addEvent = async (req, res) => {
     //save to prisma
     const image_path = `${process.env.SUPA_URL}/object/public/images/${uploaded.data.path}`;
 
-    res.json(image_path);
+    //handle body
+    if (!title || !description || !price || !event_date) {
+      return res.status(400).json("missing required body parameters");
+    }
+
+    if (parseInt(price) < 1) {
+      return res.status(400).json("invalid price ranges");
+    }
+
+    const data = {
+      title,
+      description,
+      image_url: image_path,
+      price: parseInt(price),
+      event_date: new Date(event_date),
+    };
+
+    const newEvent = await prisma.events.create({
+      data,
+    });
+
+    res.json(newEvent);
   } catch (error) {
     console.log(error);
     res.status(400).json(error.message);

@@ -23,5 +23,5 @@ model events {
   image_url   String
   price       Int
   created_at  DateTime? @default(now()) @db.Timestamp(6)
-  event_date  DateTime  @db.Timestamp(6)
+  event_date  DateTime  @db.Date
 }
