@@ -56,10 +56,10 @@ class Mpesa {
           TransactionType: "CustomerPayBillOnline",
           Amount: amount,
           PartyA: phone,
-          PartyB: this.shortcode,
+          PartyB: process.env.SHORTCODE,
           PhoneNumber: phone,
           CallBackURL: `${process.env.CALLBACK_URL}/?ticket=${ticketId}`,
-          AccountReference: ticketId,
+          AccountReference: process.env.ACCOUNT,
           TransactionDesc: "etiketi",
         },
         {
