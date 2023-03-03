@@ -24,4 +24,25 @@ model events {
   price       Int
   created_at  DateTime? @default(now()) @db.Timestamp(6)
   event_date  DateTime  @db.Date
+  tickets     tickets[]
+}
+
+model tickets {
+  ticket_no  Int        @id @default(autoincrement())
+  event_id   Int
+  phone      String     @db.VarChar(12)
+  paid_by    String     @db.VarChar(255)
+  is_paid    Boolean    @default(false)
+  created_at DateTime?  @default(now()) @db.Timestamp(6)
+  payments   payments[]
+  events     events     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model payments {
+  id           Int       @id @default(autoincrement())
+  ticket_no    Int
+  is_completed Boolean   @default(false)
+  reference    String
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  tickets      tickets   @relation(fields: [ticket_no], references: [ticket_no], onDelete: NoAction, onUpdate: NoAction)
 }
