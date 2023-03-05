@@ -46,3 +46,11 @@ model payments {
   created_at   DateTime? @default(now()) @db.Timestamp(6)
   tickets      tickets   @relation(fields: [ticket_no], references: [ticket_no], onDelete: NoAction, onUpdate: NoAction)
 }
+
+model customers {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  phone      String    @unique @db.VarChar(12)
+  pin        String?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}

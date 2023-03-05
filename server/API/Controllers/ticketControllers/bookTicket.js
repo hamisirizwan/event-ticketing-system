@@ -1,5 +1,7 @@
 const prisma = require("../../DB/prisma");
+const bcrypt = require("bcryptjs");
 const validator = require("../../Utilities/validator");
+const generator = require("../../Utilities/generators");
 const bookTicket = async (req, res) => {
   const { phone, name, event_id } = req.body;
   try {
@@ -9,7 +11,9 @@ const bookTicket = async (req, res) => {
     if (!validator.phone(phone)) {
       return res.status(400).json("invalid phone number");
     }
-
+    if (!validator.name(name)) {
+      return res.status(400).json("Remove non-letter characters in name field");
+    }
     // const formatedPhone = `254${phone.substring(1)}`;
 
     //find event
@@ -35,6 +39,26 @@ const bookTicket = async (req, res) => {
         events: true,
       },
     });
+
+    //find if existing customer else add a new customer.
+    const existingCustomer = await prisma.customers.findUnique({
+      where: {
+        phone: phone,
+      },
+    });
+
+    if (!existingCustomer) {
+      const pin = generator.otp().toString();
+      const hashedPin = await bcrypt.hash(pin, 10);
+      const newCustomer = await prisma.customers.create({
+        data: {
+          name: name,
+          phone: phone,
+          pin: hashedPin,
+        },
+      });
+      // console.log(newCustomer);
+    }
     res.status(200).json(newTicket);
   } catch (error) {
     console.log(error);

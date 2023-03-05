@@ -16,6 +16,10 @@ const validator = {
     }
     return true;
   },
+  name: function (name) {
+    const lettersRegExp = /^[a-zA-Z\s]+$/;
+    return lettersRegExp.test(name);
+  },
 };
 
 module.exports = validator;
