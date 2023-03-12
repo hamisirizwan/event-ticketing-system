@@ -2,7 +2,11 @@ const express = require("express");
 
 const router = express.Router();
 
-const { bookTicket, payTicket } = require("../Controllers/ticketControllers");
+const {
+  bookTicket,
+  payTicket,
+  getAllTickets,
+} = require("../Controllers/ticketControllers");
 const {
   stkQuery,
   handleCallback,
@@ -10,6 +14,7 @@ const {
 
 callbackPath = process.env.CALLBACKPATH;
 
+router.get("/get-all", getAllTickets);
 router.post("/book", bookTicket);
 router.post("/pay/:id", payTicket);
 router.post("/query", stkQuery);

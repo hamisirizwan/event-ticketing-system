@@ -8,7 +8,7 @@ import LinkItem from "./reusables/LinkItem";
 function MainLayout({ children }) {
   //   const dateToday = () => {};
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <aside className="hidden md:flex flex-col h-screen w-52 md:w-60 m-2 bg-primary rounded-lg">
         <div className="flex gap-4 py-8 px-3  items-center">
           <div className="">
@@ -26,9 +26,9 @@ function MainLayout({ children }) {
         </div>
       </aside>
       <BottomMobileNav />
-      <div className="mt-12 mx-4">
+      <div className="mt-12 mx-4 w-full ">
         <header className="text-3xl">Welcome back, Rizwan</header>
-        <div className="p-4">{children}</div>
+        <div className="flex p-4 h-full">{children}</div>
       </div>
     </div>
   );
