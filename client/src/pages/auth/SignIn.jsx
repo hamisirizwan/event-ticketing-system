@@ -7,9 +7,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/layouts/reusables/Input";
+import { useDispatch } from "react-redux";
+import { login, persist } from "../../store/slices/authSlice";
 
 function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [inputData, setInputData] = useState({
     email: "",
     password: "",
@@ -32,17 +35,18 @@ function SignIn() {
 
     try {
       const resp = await axios.post("/user/login", inputData);
-      console.log(res);
+      console.log(resp);
       toast.success();
       //handle user auth redux
+      dispatch(login(resp.data));
       navigate("/dashboard");
     } catch (error) {
       if (!error.response.data) {
         console.log(error);
         return toast.error("something wrong happened");
       }
-      console.log(error);
-      return toast.error(err.response.data);
+      // console.log(error);
+      return toast.error(error.response.data);
     }
   };
   return (
@@ -84,14 +88,13 @@ function SignIn() {
             </div>
             <button
               type="submit"
-              class=" mt-4 items-center justify-center w-full md:w-full sm:w-auto px-8 py-2 sm:text-sm text-lg sm:py-3.5 font-semibold text-white transition-all duration-200 bg-primary border border-transparent rounded-lg  hover:bg-secondary focus:outline-none "
+              className=" mt-4 items-center justify-center w-full md:w-full sm:w-auto px-8 py-2 sm:text-sm text-lg sm:py-3.5 font-semibold text-white transition-all duration-200 bg-primary border border-transparent rounded-lg  hover:bg-secondary focus:outline-none "
             >
               Log In
             </button>
           </form>
         </div>
       </div>
-      <ToastContainer autoClose={2000} />
     </section>
   );
 }

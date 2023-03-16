@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter } from "react-router-dom";
+import NoAuth from "../pages/auth/NoAuth";
 import Protected from "../pages/auth/Protected";
 import SignIn from "../pages/auth/SignIn";
 import Error404 from "../pages/Error404";
@@ -16,8 +17,13 @@ const router = createBrowserRouter([
     element: <LandingPage />,
   },
   {
-    path: "/sign-in",
-    element: <SignIn />,
+    element: <NoAuth />,
+    children: [
+      {
+        path: "/sign-in",
+        element: <SignIn />,
+      },
+    ],
   },
   {
     path: "/book/:id",
