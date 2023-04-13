@@ -10,7 +10,7 @@ function Dashboard() {
     <MainLayout>
       <div>
         <header className="text-3xl my-2">
-          Welcome back, <span className="uppercase">{session.user.name}</span>
+          Welcome back, <span className="uppercase">{session.user?.name}</span>{" "}
         </header>
         <h1>DASHBOARD</h1>
       </div>
