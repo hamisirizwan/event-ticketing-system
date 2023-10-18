@@ -7,13 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id       Int     @id @default(autoincrement())
-  name     String  @db.VarChar(255)
-  is_admin Boolean @default(false)
-  phone    String  @unique @db.VarChar(12)
-  email    String  @unique @db.VarChar(255)
-  password String
+model customers {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  phone      String    @unique @db.VarChar(12)
+  pin        String?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
 }
 
 model events {
@@ -27,6 +26,15 @@ model events {
   tickets     tickets[]
 }
 
+model payments {
+  id           Int       @id @default(autoincrement())
+  ticket_no    Int
+  is_completed Boolean   @default(false)
+  reference    String
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  tickets      tickets   @relation(fields: [ticket_no], references: [ticket_no], onDelete: NoAction, onUpdate: NoAction)
+}
+
 model tickets {
   ticket_no  Int        @id @default(autoincrement())
   event_id   Int
@@ -38,19 +46,11 @@ model tickets {
   events     events     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model payments {
-  id           Int       @id @default(autoincrement())
-  ticket_no    Int
-  is_completed Boolean   @default(false)
-  reference    String
-  created_at   DateTime? @default(now()) @db.Timestamp(6)
-  tickets      tickets   @relation(fields: [ticket_no], references: [ticket_no], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model customers {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(255)
-  phone      String    @unique @db.VarChar(12)
-  pin        String?
-  created_at DateTime? @default(now()) @db.Timestamp(6)
+model users {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(255)
+  is_admin Boolean @default(false)
+  phone    String  @unique @db.VarChar(12)
+  email    String  @unique @db.VarChar(255)
+  password String
 }

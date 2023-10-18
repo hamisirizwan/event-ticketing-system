@@ -8,6 +8,7 @@ const USER = require("./API/Routes/user");
 const EVENT = require("./API/Routes/event");
 const TICKET = require("./API/Routes/ticket");
 const CUSTOMER = require("./API/Routes/customer");
+const prisma = require("./API/DB/prisma");
 // const Mpesa = require("./API/Utilities/payments/mpesa");
 
 // const mpesa = new Mpesa();
@@ -18,8 +19,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 app.use(morgan("tiny"));
 
-app.get("/", (req, res) => {
-  res.send("daraja docs page");
+app.get("/", async(req, res) => {
+//  const users = await prisma.users.findMany();
+//  res.send(users)
+
+res.send("heath check 100%")
 });
 
 app.use("/api/user", USER);
@@ -30,3 +34,7 @@ app.use("/api/customer", CUSTOMER);
 app.listen(port, () => {
   console.log(`server is up and running at port: ${port}`);
 });
+
+module.exports = {
+  app,
+};
