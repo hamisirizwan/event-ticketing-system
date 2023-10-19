@@ -8,9 +8,10 @@ function formatEventDate(inputDate) {
   
     const dayOfWeek = daysOfWeek[eventDate.getUTCDay()];
     const dayOfMonth = eventDate.getUTCDate();
+    const month = monthNames[eventDate.getUTCMonth()];
     const year = eventDate.getUTCFullYear();
   
-    const formattedDate = `${dayOfWeek} ${dayOfMonth}${getDayOfMonthSuffix(dayOfMonth)} ${year}`;
+    const formattedDate = `${dayOfWeek} ${dayOfMonth}${getDayOfMonthSuffix(dayOfMonth)} ${month} ${year}`;
   
     function getDayOfMonthSuffix(day) {
       if (day >= 11 && day <= 13) {
