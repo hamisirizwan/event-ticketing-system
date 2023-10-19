@@ -1,4 +1,6 @@
+const notify = require("../../Utilities/notifications")
 const prisma = require("../../DB/prisma");
+const formatEventDate = require("../../Utilities/formatDate");
 const Mpesa = require("../../Utilities/payments/mpesa");
 
 const mpesa = new Mpesa();
@@ -52,6 +54,9 @@ const handleCallback = async (req, res) => {
       where: {
         ticket_no: parseInt(req.query.ticket),
       },
+      include:{
+        events: true
+      }
     });
 
     if (!existingTicket) {
@@ -67,6 +72,12 @@ const handleCallback = async (req, res) => {
       },
     });
 
+    //send the message
+    const message = `*E-TIKETI*\n\nBooking Invoice\n\nEvent: ${existingTicket.events.title}\n\nHappening On: ${formatEventDate(existingTicket.events.event_date)}\n\nTicket No: ${existingTicket.ticket_no}\n\nPAYMENT REFERENCE: ${code}\n\nSEE YOU THERE\n\napiwap.com`
+    const number = `+254${existingTicket.phone.substring(1)}`
+    const url = existingTicket.events.image_url
+    console.log(message, number)
+    await notify.sendImageViaWhatsapp(number,url,message)
     res.status(200).json("ok saf");
   } catch (error) {
     console.log(error.message);
